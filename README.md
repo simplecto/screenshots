@@ -119,4 +119,5 @@ Note: This is a hypothesis, and I am willing to change my mind if this does not 
 Please fork and submit pull requests if you are inspired to do so. Issues are open as well.  
   
   
-[systemarch]: https://github.com/undernewmanagement/screenshots/raw/master/src/docs/assets/system-architecture.jpg "Diagram of system architecture"
+[systemarch]: https://raw.githubusercontent.com/undernewmanagement/screenshots/master/docs/assets/system-architecture.jpg "Diagram of system architecture"
+              
