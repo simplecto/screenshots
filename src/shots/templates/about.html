@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}{% endblock %}
+{% block meta_description %}{% endblock %}
+
+{% block content %}
+
+<h2>About Screenshots</h2>
+
+<p>
+    Hello there! Thanks for checking out ScreenShots. It is an experiment 
+    where I explore what it takes to build a robust screenshot tool 
+    that can handles the complexity of todays websites. Please feel
+    to try it out and make your own.
+</p>
+
+<p>
+    Feel free to submit bug reports on this 
+    <a href="https://github.com/undernewmanagement/screenshots/issues" 
+        title="File issues with the screenshot tool here.">GitHub page.</a>
+</p>
+
+
+<hr/>
+
+<h2>Technical deatails of this project</h2>
+People are often curious about the technical details of the project such as tech stack and
+hosting.
+
+<h3>Tech Stack</h3>
+<ul>
+    <li>Virtual Machine (3-core VM/2Gig RAM)</li>
+    <li>Ubuntu Linux 18.04</li>
+    <li>Docker</li>
+    <li>Traefik for TLS and rverse proxy</li>
+    <li>Django</li>
+    <li>PostgreSQL</li>
+    <li>Selenium (For screenshots)</li>
+    <li>Tacit CSS</li>
+</ul>
+
+<h3>Hosting</h3>
+<p>Screenshots is hosted at <a href="https://scaleway.com" title="Scaleway">Scaleway</a>,
+   a cloud services provider based in France. They offer budget-hosting solutions like
+   the one I use here.</p>
+
+<p>The server on which I run this service, the 
+<a href="https://www.scaleway.com/en/virtual-instances/development/" title="DEV1-M">DEV1-M</a>
+ is a 3-core VM with 4Gigs or RAM and 20G local storage.</p>
+
+<h2>Open Source Used in this project</h2>
+<ul>
+    <li><a href="https://github.com/yegor256/tacit" title="Tacit CSS on Github">Tacit CSS</a></li>
+    <li><a href="https://djangoproject.com" title="Django Project main website" >Django</a></li>
+    <li><a href="https://selenium.dev/" title="Selenium HQ">Selenium</a></li>
+    <li><a href="https://docker.com" title="Docker">Docker</a></li>
+</ul>
+
+{% endblock %}

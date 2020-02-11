@@ -1,0 +1,35 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="{% block meta_description %}{% endblock %}">
+        
+        <style>            
+            {% include 'static/tacit.css'%}
+            {% include 'static/site.css' %}
+        </style>
+        {% block style %}{% endblock %}
+        <link rel="icon" href="{% static 'favicon.png'%}" type="image/png">
+    </head>
+    <body>
+        <nav>
+            <a href="{% url 'home' %}">Screenshots</a>
+            <div>
+                <a href="{% url 'about' %}" title="About screenshots">About</a>
+                <a href="https://github.com/undernewmanagement/screenshots/issues" target="_blank">GitHub</a>
+                {% if user.is_superuser %}
+                <a href="/admin">Admin</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <main>        
+        {% block content %}{% endblock %}
+        </main>
+        <footer>
+        <div>Copyright &copy; 2020 SimpleCTO</div>
+        </footer>
+    </body>
+</html>

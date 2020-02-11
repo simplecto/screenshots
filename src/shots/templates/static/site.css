@@ -1,0 +1,54 @@
+/**
+These styles apply site-wide.
+*/
+
+html, body {
+    margin: 0 auto;
+    padding: 0;
+    background-color: #f7f7f7;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;    
+}
+
+nav a:hover {
+    text-decoration: none;
+}
+
+nav div a {
+    display: inline-block;
+    margin: 0 2rem;
+    font-size: 0.75rem;
+    color: black;
+}
+
+nav div a:hover {
+    color: blue;
+}
+
+#brand {
+    margin-bottom: 1rem; 
+    font-size: 1.5rem; 
+    text-transform: uppercase;
+
+}
+
+main {
+    margin: 0 auto;
+    padding: 0 1rem;
+    max-width: 60rem;
+    flex: 1;
+}
+    
+footer {
+    background-color: rgb(41, 41, 41);
+    margin: 0 auto;
+    font-size: 0.75em;
+    color: gray;
+    text-align: center;
+    width: 100%;
+}
+
+p {
+    max-width: 40rem;
+}
