@@ -1,4 +1,6 @@
 import base64
+from datetime import datetime
+
 from django.db import models
 import uuid
 from django.utils.safestring import mark_safe
@@ -51,13 +53,7 @@ class ScreenShot(models.Model):
     duration = models.IntegerField(null=True, blank=True)
     image_binary = models.BinaryField(blank=True, null=True)
     format = models.CharField(max_length=1, choices=FORMAT_CHOICES, default=DESKTOP)
-
-    def formfield(self, **kwargs):
-        # This is a fairly standard way to set up some defaults
-        # while letting the caller override them.
-        defaults = {'form_class': MyFormField}
-        defaults.update(kwargs)
-        return super().formfield(**defaults)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def image_tag(self):
         if self.status == self.SUCCESS:

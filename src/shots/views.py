@@ -15,7 +15,9 @@ class ScreenShotForm(ModelForm):
 
 def index(request):
     form = ScreenShotForm()
-    shots = ScreenShot.objects.filter(status=ScreenShot.SUCCESS).all()
+    shots = ScreenShot.objects\
+                .filter(status=ScreenShot.SUCCESS)\
+                .order_by('-created_at').all()[:30]
 
     data = {
         'form': form,
