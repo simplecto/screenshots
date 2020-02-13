@@ -13,11 +13,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='screenshot',
-            name='image',
-            field=models.ImageField(blank=True, null=True, upload_to=shots.models.hash_directory_path),
-        ),
         migrations.AlterField(
             model_name='screenshot',
             name='url',
