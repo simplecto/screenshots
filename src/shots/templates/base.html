@@ -1,6 +1,13 @@
 {% load static %}<!DOCTYPE html>
 <html lang="en">
     <head>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-50414207-5');
+        </script>
         <title>{% block title %}{% endblock %}</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,11 +19,18 @@
         </style>
         {% block style %}{% endblock %}
         <link rel="icon" href="{% static 'favicon.png'%}" type="image/png">
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50414207-5"></script>
     </head>
     <body>
+        <div id="top">
+            Screenshots is an experiment from <a href="https://www.simplecto.com/building-own-screenshot-as-a-service-docker-django-selenium/?ref=screenshot" title="Checkout SimpleCTO" target="_blank">SimpleCTO</a>.
+            Please enjoy!
+        </div>
         <nav>
-            <a href="{% url 'home' %}">Screenshots</a>
+
             <div>
+                <a href="{% url 'home' %}" title="Home">Home</a>
                 <a href="{% url 'about' %}" title="About screenshots">About</a>
                 <a href="https://github.com/undernewmanagement/screenshots/issues" target="_blank">GitHub</a>
                 {% if user.is_superuser %}
