@@ -134,11 +134,9 @@ of the desired website</em>
     {% for s in shots %}
     <div>
         <img src="{% thumbnail s 300 198 %}" height="198px" width="300px"/>
-{#        <img src="{{ s.thumb_data_uri }}" height="198px" width="300px"/>#}
-
-{#        <img src="{{ s.image.thumbnail.198x198 }}" height="198px" width="300px"/>#}
-
-        <a href="{% url 'screenshot_get' s.id %}" title="Full sized screenshot of {{s.url}}" >{{s.url}}</a>
+        <a href="{% url 'screenshot_get' s.id %}" title="Full sized screenshot of {{s.url}}" >
+            {{s.url|truncatechars:30}}
+        </a>
     </div>
     {% endfor %}
 </div>
