@@ -9,10 +9,14 @@ services:
         networks:
             - web
         labels:
+            - traefik.enable=tru
             - traefik.http.routers.screenshot.rule=Host(`yourdomain.com`)
             - traefik.http.routers.screenshot.tls=true
             - traefik.http.routers.screenshot.tls.certresolver=le
             - traefik.http.services.screenshot.loadbalancer.server.port=8000
+
+            - traefik.http.middlewares.screenshot.compress=true
+            - traefik.http.routers.screenshot.middlewares=screenshot@docker
 
     worker_ff:
         image: screenshots
