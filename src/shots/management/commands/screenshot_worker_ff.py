@@ -10,6 +10,7 @@ import random
 from PIL import Image
 import io
 from django.core.cache import cache
+from django.core.cache import caches
 
 
 class Command(BaseCommand):
@@ -28,6 +29,7 @@ class Command(BaseCommand):
             if shots.count() > 0:
                 shot = shots.all()[0]
                 cache.delete(shot.id.hex)
+                caches['page'].clear()
                 self.stdout.write(self.style.SUCCESS(f'Screenshot started: {shot.url}'))
 
                 shot.status = ScreenShot.PENDING

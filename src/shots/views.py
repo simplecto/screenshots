@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from shots.models import ScreenShot
 from django.forms import ModelForm
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.cache import cache_page
+from django.views.decorators.http import condition
 
 
 class ScreenShotForm(ModelForm):
@@ -13,6 +15,12 @@ class ScreenShotForm(ModelForm):
             'format' : forms.RadioSelect()
         }
 
+def latest_entry(request):
+    return ScreenShot.objects.filter(status=ScreenShot.SUCCESS)\
+           .latest("created_at").created_at
+
+@condition(last_modified_func=latest_entry)
+@cache_page(60, cache="page")
 def index(request):
     form = ScreenShotForm()
     shots = ScreenShot.objects\
