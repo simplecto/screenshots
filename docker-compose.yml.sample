@@ -9,7 +9,7 @@ services:
         networks:
             - web
         labels:
-            - traefik.enable=tru
+            - traefik.enable=true
             - traefik.http.routers.screenshot.rule=Host(`yourdomain.com`)
             - traefik.http.routers.screenshot.tls=true
             - traefik.http.routers.screenshot.tls.certresolver=le
