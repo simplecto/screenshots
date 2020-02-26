@@ -3,25 +3,55 @@
 {% block title %}{% endblock %}
 {% block meta_description %}{% endblock %}
 
+{% block style %}
+<style nonce="{{request.csp_nonce}}">
+    h1.title {
+        text-align: center;
+    }
+
+    h1.title em {
+        display: block;
+        font-weight: normal;
+        font-size: 1rem;
+    }
+
+    #shot-container {
+        margin-top: 4rem;
+        width: 100%;
+    }
+
+    #shot-container img {
+        max-width: 100%;
+        border: 1px solid #afafaf;
+    }
+
+    #shot-pending-container {
+        margin-top: 4rem;
+        width: 100%;
+        background-color: yellow;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
-    
-    <h1 style="text-align: center">
-        <em style="display: block;font-weight: normal;font-size: 1rem">This is a screenshot of</em>
+    <h1 class="title">
+        <em>This is a screenshot of</em>
         {{shot.url}}
     </h1>
 
     {% if shot.status == 'S' %}
-    <div style="margin-top: 4rem; width: 100%;"> 
-        <img src="{{ shot.full_data_uri }}" alt="{{shot.url}}" style="max-width: 100%; border: 1px solid #afafaf;"/>
+    <div id="shot-container">
+        <img src="{{ shot.full_data_uri }}" alt="{{shot.url}}"/>
     </div>
     {% endif %}
 
     {% if shot.status == 'P' or shot.status == 'N' %}
-    <div style="margin-top: 4rem; width: 100%; background-color: yellow; text-align: center">
+    <div id="shot-pending-container">
        Your screenshot is still loading. Please wait. This page will reload automatically...
     </div>
-    <script>setTimeout(function() {  location.reload(); }, 5000);</script>
+    <script nonce="{{request.csp_nonce}}">setTimeout(function() {  location.reload(); }, 5000);</script>
 
     {% endif %}
 {% endblock %}

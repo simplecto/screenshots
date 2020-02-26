@@ -1,0 +1,92 @@
+#images {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    padding-top: 5rem;
+}
+
+#images > div {
+    margin: 1rem;
+}
+
+#images > div a {
+    font-size: 0.75rem;
+    width: 100%;
+    margin: 0.5rem;
+    text-align: center;
+    display: block;
+}
+
+#images > div img {
+    display: block;
+    border: 1px solid #afafaf
+}
+
+h1 {
+    font-family: Georgia;
+    text-align: center;
+}
+
+@media only screen and (min-width: 320px){
+    h1 {
+        font-size: 2rem;
+        margin: 4rem 0 2rem 0;
+    }
+
+}
+
+@media only screen and (min-width: 800px){
+    h1 {
+        font-size: 3rem;
+        margin: 6rem 0 1.5rem 0
+    }
+
+}
+
+
+#search  {
+    display: flex;
+    justify-content: center;
+}
+
+#search button {
+    text-align: center;
+}
+
+#form_errors {
+    color: #FF1744;
+
+    margin: 0 auto;
+    text-align: center;
+    font-size: 0.75rem;
+}
+
+input[type="text"] {
+    border-radius: 0;
+    width: 80%;
+    border-bottom: 1px solid gray;
+    margin: 0;
+}
+
+button {
+    border-radius: 0;
+    margin: 0;
+}
+
+em {
+    display: block;
+    text-align: center;
+}
+
+input[type="radio"] {
+    margin: 0;
+}
+
+#shot-format-container {
+     display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+label {
+     margin-right: 1rem
+}

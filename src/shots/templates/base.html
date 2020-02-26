@@ -1,26 +1,19 @@
 {% load static %}<!DOCTYPE html>
 <html lang="en">
     <head>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'UA-50414207-5');
-        </script>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50414207-5"></script>
+        <script src="{% static 'js/site.js' %}"></script>
         <title>{% block title %}{% endblock %}</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="{% block meta_description %}{% endblock %}">
-        
-        <style>            
-            {% include 'static/tacit.css'%}
-            {% include 'static/site.css' %}
-        </style>
+        {% block meta_extra %}{% endblock %}
+
+        <link rel="stylesheet" href="{% static 'css/tacit.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/site.css' %}"/>
         {% block style %}{% endblock %}
         <link rel="icon" href="{% static 'favicon.png'%}" type="image/png">
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50414207-5"></script>
     </head>
     <body>
         <div id="top">

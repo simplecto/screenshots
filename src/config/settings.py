@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'csp.middleware.CSPMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -150,8 +151,8 @@ else:
     EMAIL_USE_TLS = email_config['EMAIL_USE_TLS']
 
 """
-STATIC ASSET SERVING
-WhiteNoise configuration for forever-cacheable files and compression support
+STATIC ASSET HANDLING
+  - WhiteNoise configuration for forever-cacheable files and compression support
 """
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -159,3 +160,27 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+"""
+CONTENT-SECURITY-POLICY
+  - Refer to Mozilla Observatory when crafting your CSP: https://observatory.mozilla.org
+"""
+CSP_DEFAULT_SRC = ("'none'",)
+CSP_SCRIPT_SRC = ("'self'",'https://www.googletagmanager.com','https://www.google-analytics.com',)
+CSP_STYLE_SRC = ("'self'",)
+CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src']
+CSP_IMG_SRC = ("'self'","data:",'https://www.google-analytics.com',)
+CSP_FRAME_ANCESTORS = ("'none'",)
+CSP_BASE_URI = ("'none'",)
+CSP_FORM_ACTION = ("'self'",)
+
+
+"""
+COOKIES & CSRF COOKIE POLICIES
+"""
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Strict'
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_NAME = '__Host-csrftoken'
+SESSION_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_SECURE = True

@@ -1,92 +1,11 @@
 {% extends "base.html" %}
-{% load thumbnail_url %}
+{% load thumbnail_url static %}
 
 {% block title %}{% endblock %}
 {% block meta_description %}{% endblock %}
 
 {% block style %}
-<style>
-#images {
-    display: flex; 
-    flex-flow: row wrap;
-    justify-content: center;
-    padding-top: 5rem;
-}
-
-#images > div {
-    margin: 1rem;
-}
-
-#images > div a {
-    font-size: 0.75rem;
-    width: 100%;
-    margin: 0.5rem;
-    text-align: center;
-    display: block;
-}
-
-#images > div img {
-    display: block;
-    border: 1px solid #afafaf
-}
-
-h1 {
-    font-family: Georgia;
-    text-align: center;
-}
-
-@media only screen and (min-width: 320px){
-    h1 {
-        font-size: 2rem;
-        margin: 4rem 0 2rem 0;
-    }
-
-}
-
-@media only screen and (min-width: 800px){
-    h1 {
-        font-size: 3rem;
-        margin: 6rem 0 1.5rem 0
-    }
-
-}
-
-
-#search  {
-    display: flex;
-    justify-content: center;
-}
-
-#form_errors {
-    color: #FF1744;
-    
-    margin: 0 auto;
-    text-align: center;
-    font-size: 0.75rem;
-}
-
-input[type="text"] {
-    border-radius: 0;
-    width: 80%;
-    border-bottom: 1px solid gray;
-    margin: 0;
-}
-
-button {
-    border-radius: 0;
-    margin: 0;
-}
-
-em {
-    display: block;
-    text-align: center;
-}
-
-input[type="radio"] {
-    margin: 0;
-}
-
-</style>
+<link rel="stylesheet" href="{% static 'css/home.css' %}"/>
 {% endblock %}
 
 {% block content %}
@@ -102,7 +21,7 @@ input[type="radio"] {
     
     <div id="search">
         <input type="text" name="url" value="{{ form.url.value|default_if_none:''}}" placeholder=" website or domain name (eg - https://bbc.co.uk)"/>
-        <button style="text-align: center;" class="submit" type="submit">Go</button>
+        <button class="submit" type="submit">Go</button>
     </div>
     {% if form.url.errors %}
     <div id="form_errors">
@@ -112,8 +31,8 @@ input[type="radio"] {
     </div>
     {% endif %}
 
-    <div style="display: flex; justify-content: center; margin-top: 1rem;">
-        <label for="id_format_0" style="margin-right: 1.5rem">
+    <div id="shot-format-container">
+        <label for="id_format_0">
             <input type="radio" name="format" value="D" id="id_format_0" {% if form.format.value == 'D' %}checked=""{% endif %}/> Desktop
         </label>
 

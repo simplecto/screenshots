@@ -16,6 +16,8 @@ services:
             - traefik.http.services.screenshot.loadbalancer.server.port=8000
 
             - traefik.http.middlewares.screenshot.compress=true
+
+            - traefik.http.middlewares.
             - traefik.http.routers.screenshot.middlewares=screenshot@docker
 
     worker_ff:
