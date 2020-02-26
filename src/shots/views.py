@@ -1,4 +1,5 @@
 from django import forms
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from shots.models import ScreenShot
 from django.forms import ModelForm
@@ -59,3 +60,7 @@ def screenshot_get(request, id):
         'shot': shot
     }
     return render(request, "screenshot_get.html", data)
+
+
+def health_check(request):
+    return HttpResponse('OK')
