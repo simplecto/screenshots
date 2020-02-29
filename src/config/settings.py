@@ -177,10 +177,15 @@ CSP_FORM_ACTION = ("'self'",)
 
 """
 COOKIES & CSRF COOKIE POLICIES
+
+TODO: These are only enabled in production because people the admin/ won't
+work without HTTPS enabled. And I'm too lazy to futz with HTTPS on localhost
+right now.
 """
-CSRF_COOKIE_HTTPONLY = True
-CSRF_COOKIE_SAMESITE = 'Strict'
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_NAME = '__Host-csrftoken'
-SESSION_COOKIE_SAMESITE = 'Strict'
-SESSION_COOKIE_SECURE = True
+if not DEBUG:
+    CSRF_COOKIE_HTTPONLY = True
+    CSRF_COOKIE_SAMESITE = 'Strict'
+    CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_NAME = '__Host-csrftoken'
+    SESSION_COOKIE_SAMESITE = 'Strict'
+    SESSION_COOKIE_SECURE = True
