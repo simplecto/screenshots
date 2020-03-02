@@ -1,11 +1,14 @@
+import json
 from django import forms
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from shots.models import ScreenShot
 from django.forms import ModelForm
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import condition
+from django.core.exceptions import ValidationError
+from django.views.decorators.csrf import csrf_exempt
 
 
 class ScreenShotForm(ModelForm):
@@ -64,3 +67,47 @@ def screenshot_get(request, id):
 
 def health_check(request):
     return HttpResponse('OK')
+
+@csrf_exempt
+def api_screenshot(request):
+    body_unicode = request.body.decode('utf-8')
+
+    try:
+        body = json.loads(body_unicode)
+    except json.decoder.JSONDecodeError as e:
+        data = {
+            'message': 'Invalid JSON'
+        }
+        return JsonResponse(data=data, status=400)
+
+
+    url = body['url'] if 'url' in body else None
+    callback_url = body['callback_url'] if 'callback_url' in body else None
+    keywords = body['keywords'] if 'keywords' in body else None
+
+    if not url:
+        data = {
+            'message': 'url is a required parameter'
+        }
+        return JsonResponse(data=data, status=400)
+
+    s = ScreenShot(url=url, callback_url=callback_url, keywords=keywords)
+
+    try:
+        s.full_clean()
+    except ValidationError as e:
+        data = {
+            'errors': ','.join(e.messages)
+        }
+        return JsonResponse(data=data, status=400)
+
+    s.save()
+    data = {
+        'id': s.id,
+        'url': s.url
+    }
+
+    if callback_url:
+        data['callback_url'] = s.callback_url
+
+    return JsonResponse(data=data, status=201)

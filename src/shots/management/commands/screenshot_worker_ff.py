@@ -1,3 +1,4 @@
+import requests
 from django.core.management.base import BaseCommand, CommandError
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
@@ -28,9 +29,10 @@ class Command(BaseCommand):
 
             if shots.count() > 0:
                 shot = shots.all()[0]
+                self.stdout.write(self.style.SUCCESS(f'Screenshot started: {shot.url}'))
+
                 cache.delete(shot.id.hex)
                 caches['page'].clear()
-                self.stdout.write(self.style.SUCCESS(f'Screenshot started: {shot.url}'))
 
                 shot.status = ScreenShot.PENDING
                 shot.save()
@@ -45,11 +47,36 @@ class Command(BaseCommand):
                     shot.duration = diff
                     shot.save()
                     self.stdout.write(self.style.SUCCESS(f'Screenshot saved: {shot.url} {diff} seconds'))
+                    self.do_webhook(shot)
 
                 except WebDriverException as e:
                     shot.status = ScreenShot.FAILURE
                     shot.save()
                     self.stdout.write(self.style.ERROR(f'Error: {e}'))
+
+
+    def do_webhook(self, shot):
+
+        if not shot.callback_url:
+            return
+
+        payload = {
+            'id': shot.id.hex,
+            'url': shot.url,
+            'callback_url': shot.callback_url,
+            'created_at': shot.created_at.strftime("%Y-%m-%dT%H:%M:%S%z"),
+            'sortkey': shot.created_at.strftime("%Y%m%d%H%M%S"),
+            'content': shot.image_as_base64
+        }
+
+        headers = {
+            'content-type': 'application/json'
+        }
+
+        requests.post(shot.callback_url, json=payload, headers=headers)
+
+        self.stdout.write(self.style.SUCCESS(f'Firing Webhook: {shot.url} to {shot.callback_url}'))
+
 
     def get_screenshot(self, shot):
         options = Options()

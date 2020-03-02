@@ -44,6 +44,13 @@ class ScreenShot(models.Model):
         (MOBILE, 'Mobile'),
     )
 
+    BROWSER = 'B'
+    API = 'A'
+    CREATED_WITH_CHOICES = (
+        (API, 'API'),
+        (BROWSER, 'Browser')
+    )
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     url = models.URLField(max_length=500, validators=[validators.URLValidator(), validate_hostname_dns ])
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=NEW)
@@ -54,6 +61,9 @@ class ScreenShot(models.Model):
     image_binary = models.BinaryField(blank=True, null=True)
     format = models.CharField(max_length=1, choices=FORMAT_CHOICES, default=DESKTOP)
     created_at = models.DateTimeField(auto_now_add=True)
+    created_with = models.CharField(max_length=1, choices=CREATED_WITH_CHOICES, default=BROWSER)
+    callback_url = models.URLField(null=True, blank=True, max_length=500,
+                                   validators=[validators.URLValidator(), validate_hostname_dns ])
 
     def image_tag(self):
         if self.status == self.SUCCESS:
@@ -72,8 +82,8 @@ class ScreenShot(models.Model):
 
     @property
     def full_data_uri(self):
-        b64 = base64.b64encode(self.image_binary).decode('ascii')
-        return f'data:image/jpg;base64,{b64}'
+        #b64 = base64.b64encode(self.image_binary).decode('ascii')
+        return f'data:image/jpg;base64,{self.image_as_base64}'
 
     def get_absolute_url(self):
         return f"/screenshot/{self.id}"
@@ -86,5 +96,9 @@ class ScreenShot(models.Model):
     @property
     def full_tag(self):
         return mark_safe(f'<img src="{self.full_data_uri}" alt="Thumbnail"/>')
+
+    @property
+    def image_as_base64(self):
+        return base64.b64encode(self.image_binary).decode('ascii')
 
     image_tag.short_description = 'Image'

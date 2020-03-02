@@ -9,5 +9,7 @@ urlpatterns = [
     path('about', views.about, name='about'),
     path('screenshot/create', views.screenshot_create, name='screenshot_create'),
     path('screenshot/<uuid:id>', views.screenshot_get, name='screenshot_get'),
+
+    path('api/screenshot', views.api_screenshot, name='api-screenshot'),
     path('health-check', views.health_check, name='health-check'),
 ]
