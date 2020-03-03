@@ -80,7 +80,6 @@ def api_screenshot(request):
         }
         return JsonResponse(data=data, status=400)
 
-
     url = body['url'] if 'url' in body else None
     callback_url = body['callback_url'] if 'callback_url' in body else None
     keywords = body['keywords'] if 'keywords' in body else None
