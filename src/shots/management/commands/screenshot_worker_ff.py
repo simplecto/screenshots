@@ -82,6 +82,7 @@ class Command(BaseCommand):
         options = Options()
         options.headless = True
         driver = webdriver.Firefox(options=options)
+        driver.install_addon(f'{settings.BASE_DIR}/firefox-extensions/i_dont_care_about_cookies-3.1.3-an+fx.xpi')
         driver.set_page_load_timeout(60)
         driver.set_window_size(shot.width, shot.height)
         driver.get(shot.url)
