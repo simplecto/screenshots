@@ -79,24 +79,26 @@ class Command(BaseCommand):
 
 
     def get_screenshot(self, shot):
+
+        profile = webdriver.FirefoxProfile()
+
+        profile.set_preference("layout.css.devPixelsPerPx", str(shot.dpi))
+
         options = Options()
         options.headless = True
-        driver = webdriver.Firefox(options=options)
+
+        driver = webdriver.Firefox(options=options, firefox_profile=profile)
         driver.install_addon(f'{settings.BASE_DIR}/firefox-extensions/i_dont_care_about_cookies-3.1.3-an+fx.xpi')
         driver.set_page_load_timeout(60)
         driver.set_window_size(shot.width, shot.height)
         driver.get(shot.url)
 
-        # used by chron.com and others
-        try:
-            btn = driver.find_element_by_id('continue')
-            btn.click()
-        except NoSuchElementException:
-            pass
-
-        doc_element_height = driver.execute_script("return document.documentElement.scrollHeight")
-        doc_body_height = driver.execute_script("return document.body.scrollHeight")
-        height = doc_element_height if doc_element_height > doc_body_height else doc_body_height
+        for i in range(10):
+            doc_element_height = driver.execute_script("return document.documentElement.scrollHeight")
+            doc_body_height = driver.execute_script("return document.body.scrollHeight")
+            height = doc_element_height if doc_element_height > doc_body_height else doc_body_height
+            driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+            sleep(1)
 
         # some sites like pandora and statesman.com have error/GDPR pages that are shorter than
         # a normal screen.
@@ -104,7 +106,7 @@ class Command(BaseCommand):
             shot.height = height
             driver.set_window_size(shot.width, height+100)
 
-        sleep(5)
+        sleep(shot.sleep_seconds)
 
         with io.BytesIO(driver.get_screenshot_as_png()) as png_file:
 

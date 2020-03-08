@@ -83,6 +83,8 @@ def api_screenshot(request):
     url = body['url'] if 'url' in body else None
     callback_url = body['callback_url'] if 'callback_url' in body else None
     keywords = body['keywords'] if 'keywords' in body else None
+    sleep_seconds = body['sleep_seconds'] if 'sleep_seconds' in body else 5
+    dpi = body['dpi'] if 'dpi' in body else 1.0
 
     if not url:
         data = {
@@ -90,7 +92,11 @@ def api_screenshot(request):
         }
         return JsonResponse(data=data, status=400)
 
-    s = ScreenShot(url=url, callback_url=callback_url, keywords=keywords)
+    s = ScreenShot(url=url,
+                   callback_url=callback_url,
+                   keywords=keywords,
+                   sleep_seconds=sleep_seconds,
+                   dpi=dpi)
 
     try:
         s.full_clean()

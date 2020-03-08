@@ -64,6 +64,8 @@ class ScreenShot(models.Model):
     created_with = models.CharField(max_length=1, choices=CREATED_WITH_CHOICES, default=BROWSER)
     callback_url = models.URLField(null=True, blank=True, max_length=500,
                                    validators=[validators.URLValidator(), validate_hostname_dns ])
+    sleep_seconds = models.IntegerField(default=5)
+    dpi = models.DecimalField(default=1.0, decimal_places=1, max_digits=2)
 
     def image_tag(self):
         if self.status == self.SUCCESS:
