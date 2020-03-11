@@ -12,6 +12,7 @@ from PIL import Image
 import io
 from django.core.cache import cache
 from django.core.cache import caches
+from sentry_sdk import capture_exception
 
 
 class Command(BaseCommand):
@@ -53,6 +54,7 @@ class Command(BaseCommand):
                     shot.status = ScreenShot.FAILURE
                     shot.save()
                     self.stdout.write(self.style.ERROR(f'Error: {e}'))
+                    capture_exception(e)
 
 
     def do_webhook(self, shot):
@@ -83,6 +85,17 @@ class Command(BaseCommand):
         profile = webdriver.FirefoxProfile()
 
         profile.set_preference("layout.css.devPixelsPerPx", str(shot.dpi))
+
+
+        if settings.SOCKS5_PROXY_ENABLED:
+            self.stdout.write(self.style.SUCCESS(f'Proxy enabled: {settings.SOCKS5_PROXY_HOSTNAME}:{settings.SOCKS5_PROXY_PORT}'))
+            profile.set_preference('network.proxy.type', 1)
+            profile.set_preference("network.proxy.socks_version", 5)
+            profile.set_preference('network.proxy.socks', settings.SOCKS5_PROXY_HOSTNAME)
+
+            # explicit casting to int because otherwise it is ignored and fails silently.
+            profile.set_preference('network.proxy.socks_port', int(settings.SOCKS5_PROXY_PORT))
+            profile.set_preference("network.proxy.socks_remote_dns", True)
 
         options = Options()
         options.headless = True

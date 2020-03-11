@@ -14,6 +14,17 @@ DEBUG = os.getenv('DEBUG') in ['true', 'y', 't']
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+"""
+SOCKS5 Configuration
+  - used by the screenshot worker, generally to get around the error code 451
+    GDPR bullshit
+"""
+SOCKS5_PROXY_ENABLED = os.getenv('SOCKS5_PROXY_ENABLED') in ['true', 'y', 't']
+
+if SOCKS5_PROXY_ENABLED:
+    SOCKS5_PROXY_HOSTNAME = os.getenv('SOCKS5_PROXY_HOSTNAME')
+    SOCKS5_PROXY_PORT = int(os.getenv('SOCKS5_PROXY_PORT'))
+
 if os.environ['DEV_ENV'] in ['production', 'staging']:
     sentry_sdk.init(
         dsn=os.getenv('SENTRY_DSN'),
