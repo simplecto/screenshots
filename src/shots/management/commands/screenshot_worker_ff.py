@@ -1,5 +1,6 @@
 import requests
 from django.core.management.base import BaseCommand, CommandError
+from django.utils import timezone
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
@@ -15,6 +16,16 @@ from django.core.cache import caches
 from sentry_sdk import capture_exception
 
 
+class ScreenShotException(Exception):
+    pass
+
+
+class SeleniumScreenShot(object):
+    def __init__(self, image_binary, height):
+        self.image_binary = image_binary
+        self.height = height
+
+
 class Command(BaseCommand):
     help = 'Run the screenshot worker'
 
@@ -25,7 +36,8 @@ class Command(BaseCommand):
             # do this to try to prevent race conditions when multiple workers
             # are present. 
             sleep(random.randrange(1, 10))
-            start = datetime.now().strftime('%s')
+
+            start = timezone.now().strftime('%s')
             shots = ScreenShot.objects.filter(status=ScreenShot.NEW)
 
             if shots.count() > 0:
@@ -39,22 +51,20 @@ class Command(BaseCommand):
                 shot.save()
 
                 try:
-                    self.get_screenshot(shot)
+                    results = self.get_screenshot_new(shot)
                     shot.status = ScreenShot.SUCCESS
+                    shot.height = results.height
+                    shot.image_binary = results.image_binary
+                    shot.duration = int(timezone.now().strftime('%s')) - int(start)
                     shot.save()
 
-                    end = datetime.now().strftime('%s')
-                    diff = int(end) - int(start) - 5
-                    shot.duration = diff
-                    shot.save()
-                    self.stdout.write(self.style.SUCCESS(f'Screenshot saved: {shot.url} {diff} seconds'))
+                    self.stdout.write(self.style.SUCCESS(f'Screenshot saved: {shot.url} {shot.duration} seconds'))
                     self.do_webhook(shot)
 
-                except WebDriverException as e:
+                except ScreenShotException as e:
                     shot.status = ScreenShot.FAILURE
                     shot.save()
                     self.stdout.write(self.style.ERROR(f'Error: {e}'))
-                    capture_exception(e)
 
 
     def do_webhook(self, shot):
@@ -77,7 +87,7 @@ class Command(BaseCommand):
 
         requests.post(shot.callback_url, json=payload, headers=headers)
 
-        self.stdout.write(self.style.SUCCESS(f'Firing Webhook: {shot.url} to {shot.callback_url}'))
+        self.stdout.write(self.style.SUCCESS(f'Fired Webhook: {shot.url} to {shot.callback_url}'))
 
 
     def get_screenshot(self, shot):
@@ -132,3 +142,58 @@ class Command(BaseCommand):
         shot.save()
 
         driver.quit()
+
+    def get_screenshot_new(self, shot) -> SeleniumScreenShot:
+
+        profile = webdriver.FirefoxProfile()
+        profile.set_preference("layout.css.devPixelsPerPx", str(shot.dpi))
+
+        if settings.SOCKS5_PROXY_ENABLED:
+            self.stdout.write(self.style.SUCCESS(f'Proxy enabled: {settings.SOCKS5_PROXY_HOSTNAME}:{settings.SOCKS5_PROXY_PORT}'))
+            profile.set_preference('network.proxy.type', 1)
+            profile.set_preference("network.proxy.socks_version", 5)
+            profile.set_preference('network.proxy.socks', settings.SOCKS5_PROXY_HOSTNAME)
+
+            # explicit casting to int because otherwise it is ignored and fails silently.
+            profile.set_preference('network.proxy.socks_port', int(settings.SOCKS5_PROXY_PORT))
+            profile.set_preference("network.proxy.socks_remote_dns", True)
+
+        options = Options()
+        options.headless = True
+
+        driver = webdriver.Firefox(options=options, firefox_profile=profile)
+        driver.install_addon(f'{settings.BASE_DIR}/firefox-extensions/i_dont_care_about_cookies-3.1.3-an+fx.xpi')
+        driver.set_page_load_timeout(60)
+        driver.set_window_size(shot.width, shot.height)
+
+        try:
+            driver.get(shot.url)
+        except WebDriverException as e:
+            driver.quit()
+            capture_exception(e)
+            raise ScreenShotException
+
+        for i in range(10):
+            doc_element_height = driver.execute_script("return document.documentElement.scrollHeight")
+            doc_body_height = driver.execute_script("return document.body.scrollHeight")
+            height = doc_element_height if doc_element_height > doc_body_height else doc_body_height
+            driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+            sleep(1)
+
+        # some sites like pandora and statesman.com have error/GDPR pages that are shorter than
+        # a normal screen.
+        if height > shot.height:
+            driver.set_window_size(shot.width, height+100)
+
+        sleep(shot.sleep_seconds) # this might not be necessary, but needs testing
+
+        with io.BytesIO(driver.get_screenshot_as_png()) as png_file:
+
+            with Image.open(png_file).convert('RGB') as i:
+
+                with io.BytesIO() as output:
+                    i.save(output, format="JPEG")
+                    image_binary = output.getvalue()
+
+        driver.quit()
+        return SeleniumScreenShot(height=height, image_binary=image_binary)
