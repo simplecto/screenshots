@@ -12,7 +12,7 @@ reset_status.short_description = "Reset status to NEW (Refresh Images)"
 reset_status_to_failed.short_description = "Mark all as failed"
 
 class ScreenShotAdmin(admin.ModelAdmin):
-    list_display = ('url', 'status', 'format', 'resolution')
+    list_display = ('url', 'status', 'format', 'keywords', 'created_at')
     list_filter = ('status', 'format', )
     search_fields = ('url', 'keywords',)
     readonly_fields = ('width', 'height', 'duration', 'format', )
