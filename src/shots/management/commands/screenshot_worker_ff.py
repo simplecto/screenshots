@@ -167,6 +167,9 @@ class Command(BaseCommand):
             profile.set_preference('network.proxy.socks_port', int(settings.SOCKS5_PROXY_PORT))
             profile.set_preference("network.proxy.socks_remote_dns", True)
 
+            profile.set_preference("dom.webnotifications.enabled", False)
+            profile.set_preference("dom.push.enabled", False)
+
         options = Options()
         options.headless = True
 
