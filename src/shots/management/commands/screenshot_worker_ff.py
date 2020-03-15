@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
-from selenium.common.exceptions import NoSuchElementException, WebDriverException
+from selenium.common.exceptions import NoSuchElementException, WebDriverException, TimeoutException
 from django.conf import settings
 from time import sleep
 from shots.models import ScreenShot
@@ -21,9 +21,11 @@ class ScreenShotException(Exception):
 
 
 class SeleniumScreenShot(object):
-    def __init__(self, image_binary, height):
+    def __init__(self, image_binary, height, title, description):
         self.image_binary = image_binary
         self.height = height
+        self.title = title
+        self.description = description
 
 
 class Command(BaseCommand):
@@ -56,6 +58,13 @@ class Command(BaseCommand):
                     shot.height = results.height
                     shot.image_binary = results.image_binary
                     shot.duration = int(timezone.now().strftime('%s')) - int(start)
+
+                    # JSON Fields
+                    shot.meta = {
+                        'title': results.title,
+                        'description': results.description
+                    }
+
                     shot.save()
 
                     self.stdout.write(self.style.SUCCESS(f'Screenshot saved: {shot.url} {shot.duration} seconds'))
@@ -65,7 +74,6 @@ class Command(BaseCommand):
                     shot.status = ScreenShot.FAILURE
                     shot.save()
                     self.stdout.write(self.style.ERROR(f'Error: {e}'))
-
 
     def do_webhook(self, shot):
 
@@ -77,8 +85,9 @@ class Command(BaseCommand):
             'url': shot.url,
             'callback_url': shot.callback_url,
             'created_at': shot.created_at.strftime("%Y-%m-%dT%H:%M:%S%z"),
-            'sortkey': shot.created_at.strftime("%Y%m%d%H%M%S"),
-            'content': shot.image_as_base64
+            'content': shot.image_as_base64,
+            'title': shot.meta['title'],
+            'description': shot.meta['description']
         }
 
         headers = {
@@ -195,5 +204,11 @@ class Command(BaseCommand):
                     i.save(output, format="JPEG")
                     image_binary = output.getvalue()
 
+        title = driver.title
+        try:
+            description = driver.find_element_by_xpath("//meta[@name='description']").get_attribute("content")
+        except NoSuchElementException:
+            description = title
+
         driver.quit()
-        return SeleniumScreenShot(height=height, image_binary=image_binary)
+        return SeleniumScreenShot(height=height, image_binary=image_binary, title=title, description=description)

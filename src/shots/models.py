@@ -1,6 +1,7 @@
 import base64
 from datetime import datetime
 
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 import uuid
 from django.utils.safestring import mark_safe
@@ -66,6 +67,7 @@ class ScreenShot(models.Model):
                                    validators=[validators.URLValidator(), validate_hostname_dns ])
     sleep_seconds = models.IntegerField(default=5)
     dpi = models.DecimalField(default=1.0, decimal_places=1, max_digits=2)
+    meta = JSONField(null=True, blank=True)
 
     def image_tag(self):
         if self.status == self.SUCCESS:
