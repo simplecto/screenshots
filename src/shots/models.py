@@ -1,7 +1,6 @@
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 import uuid
-from django.utils.safestring import mark_safe
 from django.conf import settings
 from django.core import validators
 from shots.validators import validate_hostname_dns
@@ -66,10 +65,5 @@ class ScreenShot(models.Model):
         return reverse("screenshot_get", kwargs={"id": self.id})
 
     @property
-    def thumb_tag(self):
-        # return mark_safe(f'<img src="{self.thumb_data_uri}" alt="Thumbnail"/>')
-        return mark_safe(f'<img src="{self.thumb_data_uri}" alt="Thumbnail"/>')
-
-    @property
-    def full_tag(self):
-        return mark_safe(f'<img src="{self.full_data_uri}" alt="Thumbnail"/>')
+    def s3_url(self):
+        return f"{settings.S3_ENDPOINT_URL}/{settings.S3_BUCKET_PREFIX}/{self.id}.jpg"
