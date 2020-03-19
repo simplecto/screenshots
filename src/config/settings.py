@@ -200,3 +200,17 @@ if not DEBUG:
     CSRF_COOKIE_NAME = '__Host-csrftoken'
     SESSION_COOKIE_SAMESITE = 'Strict'
     SESSION_COOKIE_SECURE = True
+
+"""
+S3 Settings
+"""
+S3_BUCKET_PREFIX = os.getenv('S3_BUCKET_PREFIX')
+S3_REGION_NAME = os.getenv('S3_REGION_NAME')
+S3_ENDPOINT_URL = os.getenv('S3_ENDPOINT_URL')
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+
+"""
+sorl thumbnails
+"""
+THUMBNAIL_DUMMY = True
