@@ -43,7 +43,7 @@
 
     {% if shot.status == 'S' %}
     <div id="shot-container">
-        <img src="{{ shot.full_data_uri }}" alt="{{shot.url}}"/>
+        <img src="{{ shot.s3_url }}" alt="Full-page screenshot of {{shot.url}}"/>
     </div>
     {% endif %}
 
