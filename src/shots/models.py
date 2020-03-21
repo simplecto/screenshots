@@ -47,7 +47,6 @@ class ScreenShot(models.Model):
     height = models.IntegerField(default=768)
     keywords = models.CharField(blank=True, null=True, max_length=250)
     duration = models.IntegerField(null=True, blank=True)
-    image_binary = models.BinaryField(blank=True, null=True)
     format = models.CharField(max_length=1, choices=FORMAT_CHOICES, default=DESKTOP)
     created_at = models.DateTimeField(auto_now_add=True)
     created_with = models.CharField(max_length=1, choices=CREATED_WITH_CHOICES, default=BROWSER)
