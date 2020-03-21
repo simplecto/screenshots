@@ -22,12 +22,15 @@ def latest_entry(request):
     return ScreenShot.objects.filter(status=ScreenShot.SUCCESS)\
            .latest("created_at").created_at
 
-@condition(last_modified_func=latest_entry)
 def index(request):
     form = ScreenShotForm()
-    shots = ScreenShot.objects\
-                .filter(status=ScreenShot.SUCCESS)\
-                .order_by('-created_at').all()[:30]
+
+    try:
+        shots = ScreenShot.objects\
+                    .filter(status=ScreenShot.SUCCESS)\
+                    .order_by('-created_at').all()[:30]
+    except ScreenShot.DoesNotExist:
+        shots = None
 
     data = {
         'form': form,
