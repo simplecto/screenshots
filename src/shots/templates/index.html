@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% load thumbnail_url static %}
+{% load thumbnail_url thumbnail static %}
 
-{% block title %}{% endblock %}
-{% block meta_description %}{% endblock %}
+{% block title %}Screenshot as a Service{% endblock %}
+{% block meta_description %}Screenshot as a Service{% endblock %}
 
 {% block style %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}"/>
@@ -52,7 +52,11 @@ of the desired website</em>
 <div id="images">
     {% for s in shots %}
     <div>
-        <img src="{% thumbnail s 300 198 %}" height="198px" width="300px"/>
+{% thumbnail s.s3_url "300x198" crop="top" as im %}
+        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ s.url }} screenshot taken on {{ s.created_at }}">
+{% endthumbnail %}
+
+{#        <img src="{% thumbnail s 300 198 %}" height="198px" width="300px"/>#}
         <a href="{% url 'screenshot_get' s.id %}" title="Full sized screenshot of {{s.url}}" >
             {{s.url|truncatechars:30}}
         </a>

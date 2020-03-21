@@ -1,4 +1,3 @@
-import boto3
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 import uuid
@@ -6,8 +5,6 @@ from django.conf import settings
 from django.core import validators
 from shots.validators import validate_hostname_dns
 from django.shortcuts import reverse
-from django.db.models.signals import post_delete
-from django.dispatch import receiver
 
 
 class ScreenShot(models.Model):
@@ -59,6 +56,7 @@ class ScreenShot(models.Model):
     sleep_seconds = models.IntegerField(default=5)
     dpi = models.DecimalField(default=1.0, decimal_places=1, max_digits=2)
     meta = JSONField(null=True, blank=True)
+    file = models.FileField(null=True, blank=True)
 
     @property
     def resolution(self):
@@ -70,15 +68,3 @@ class ScreenShot(models.Model):
     @property
     def s3_url(self):
         return f"{settings.S3_ENDPOINT_URL}/{settings.S3_BUCKET_PREFIX}/{self.id.hex}.jpg"
-
-
-@receiver(post_delete, sender=ScreenShot)
-def screenshot_deleted(sender, instance, **kwargs):
-    s3 = boto3.client('s3',
-                      region_name=settings.S3_REGION_NAME,
-                      endpoint_url=settings.S3_ENDPOINT_URL,
-                      aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                      aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
-                      )
-
-    s3.delete_object(Bucket=settings.S3_BUCKET_PREFIX, Key=f"{instance.id.hex}.jpg")

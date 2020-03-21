@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sorl.thumbnail',
     'shots',
 ]
 
@@ -172,19 +173,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-"""
-CONTENT-SECURITY-POLICY
-  - Refer to Mozilla Observatory when crafting your CSP: https://observatory.mozilla.org
-"""
-CSP_DEFAULT_SRC = ("'none'",)
-CSP_SCRIPT_SRC = ("'self'",'https://www.googletagmanager.com','https://www.google-analytics.com',)
-CSP_STYLE_SRC = ("'self'",)
-CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src']
-CSP_IMG_SRC = ("'self'","data:",'https://www.google-analytics.com',)
-CSP_FRAME_ANCESTORS = ("'none'",)
-CSP_BASE_URI = ("'none'",)
-CSP_FORM_ACTION = ("'self'",)
-
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = '/media/'
 
 """
 COOKIES & CSRF COOKIE POLICIES
@@ -214,3 +204,25 @@ AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 sorl thumbnails
 """
 THUMBNAIL_DUMMY = True
+
+"""
+CONTENT-SECURITY-POLICY
+  - Refer to Mozilla Observatory when crafting your CSP: https://observatory.mozilla.org
+"""
+CSP_DEFAULT_SRC = ("'none'",)
+CSP_SCRIPT_SRC = ("'self'",'https://www.googletagmanager.com','https://www.google-analytics.com',)
+CSP_STYLE_SRC = ("'self'",)
+CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src']
+CSP_IMG_SRC = ("'self'","data:",'https://www.google-analytics.com', S3_ENDPOINT_URL, "http://dummyimage.com")
+CSP_FRAME_ANCESTORS = ("'none'",)
+CSP_BASE_URI = ("'none'",)
+CSP_FORM_ACTION = ("'self'",)
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+AWS_STORAGE_BUCKET_NAME = S3_BUCKET_PREFIX
+AWS_DEFAULT_ACL = 'public-read'
+# AWS_S3_OBJECT_PARAMETERS = {}
+# AWS_LOCATION = ''
+AWS_S3_REGION_NAME = S3_REGION_NAME
+AWS_S3_ENDPOINT_URL = S3_ENDPOINT_URL
