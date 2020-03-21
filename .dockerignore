@@ -18,3 +18,5 @@ src/data/*
 
 _images/
 docs/
+
+src/media/*/**.jpg

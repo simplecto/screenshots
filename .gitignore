@@ -3,6 +3,7 @@
 **/.sass-cache/
 src/staticfiles/
 src/locks
+src/media/*/**.jpg
 
 *.sqlite3
 *.log
