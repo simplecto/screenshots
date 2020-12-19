@@ -20,7 +20,7 @@
     {% endfor %}
     
     <div id="search">
-        <input type="text" name="url" value="{{ form.url.value|default_if_none:''}}" placeholder=" website or domain name (eg - https://bbc.co.uk)"/>
+        <input type="text" name="url" value="{{ form.url.value|default_if_none:''}}" placeholder=" website or domain name (eg - https://www.simplecto.com)"/>
         <button class="submit" type="submit">Go</button>
     </div>
     {% if form.url.errors %}
