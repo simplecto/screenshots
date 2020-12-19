@@ -1,5 +1,7 @@
 #FROM python:3.6-slim
-FROM ubuntu:18.04 
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
     apt-get install -y git python3-pip firefox-geckodriver && \
