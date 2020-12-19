@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path
 from shots import views
+from django.conf.urls.static import static
+from django.conf import settings
 
 
 urlpatterns = [
@@ -12,4 +14,5 @@ urlpatterns = [
 
     path('api/screenshot', views.api_screenshot, name='api-screenshot'),
     path('health-check', views.health_check, name='health-check'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

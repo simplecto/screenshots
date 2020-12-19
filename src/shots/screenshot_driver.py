@@ -63,7 +63,7 @@ def get_screenshot(shot) -> SeleniumScreenShot:
     except WebDriverException as e:
         driver.quit()
         capture_exception(e)
-        raise ScreenShotException
+        raise ScreenShotException(e)
 
     for i in range(10):
         doc_element_height = driver.execute_script("return document.documentElement.scrollHeight")

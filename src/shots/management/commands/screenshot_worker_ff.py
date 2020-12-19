@@ -1,5 +1,3 @@
-import tempfile
-
 import requests
 from django.core.files import File
 from django.core.management.base import BaseCommand, CommandError
@@ -9,11 +7,11 @@ from shots.models import ScreenShot
 import random
 from django.core.cache import cache
 from django.core.cache import caches
-from boto3.exceptions import Boto3Error
 from shots.screenshot_driver import (
     ScreenShotException,
     get_screenshot
 )
+import io
 
 
 class Command(BaseCommand):
@@ -50,21 +48,16 @@ class Command(BaseCommand):
             except ScreenShotException as e:
                 shot.status = ScreenShot.FAILURE
                 shot.save()
-                self.stdout.write(self.style.ERROR(f'Error: {e}'))
+                self.stdout.write(self.style.ERROR(f'Screenshot Error: {e}'))
                 continue
 
             shot.status = ScreenShot.SUCCESS
             shot.height = results.height
             shot.duration = int(timezone.now().strftime('%s')) - int(start)
 
-            with tempfile.TemporaryFile(mode="w+b") as f:
-                f.write(results.file)
+            with io.BytesIO(results.file) as f:
+                shot.file.save(f"{shot.id.hex}.jpg", File(f))
 
-                try:
-                    shot.file.save(f"{shot.id.hex}.jpg", File(f))
-                except Boto3Error as e:
-                    # todo handle error
-                    pass
 
             # JSON Fields
             shot.meta = {

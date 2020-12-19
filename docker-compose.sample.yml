@@ -1,0 +1,80 @@
+version: '3'
+
+services:
+
+    web:
+        image: screenshots
+        restart: always
+        env_file: env
+        networks:
+            - web
+        volumes:
+            - ./media:/app/media
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.screenshot.rule=Host(`yourdomain.com`)
+            - traefik.http.routers.screenshot.tls=true
+            - traefik.http.routers.screenshot.tls.certresolver=le
+            - traefik.http.services.screenshot.loadbalancer.server.port=8000
+            - traefik.http.middlewares.screenshot.compress=true
+            - traefik.http.routers.screenshot.middlewares=screenshot@docker
+
+            - traefik.http.services.screenshot.loadbalancer.healthCheck.path=/health-check
+            - traefik.http.services.screenshot.loadbalancer.healthCheck.interval=10s
+            - traefik.http.services.screenshot.loadbalancer.healthCheck.timeout=3s
+
+
+    media-files:
+        image: nginx
+        volumes:
+            - ./media:/usr/share/nginx/html:ro
+        container_name: media-files
+        restart: unless-stopped
+        networks:
+            - web
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.media-files.rule=(Host(`yourdomain.com`) && PathPrefix(`/media`))
+            - traefik.http.routers.media-files.tls=true
+            - traefik.http.routers.media-files.tls.certresolver=le
+            - traefik.http.services.media-files.loadbalancer.server.port=80
+
+             # Define a new middleware to strip the URL prefix before sending it to media-files
+            - traefik.http.middlewares.media-files-stripprefix.stripprefix.prefixes=/media
+            - traefik.http.routers.media-files.middlewares=media-files-stripprefix@docker
+
+    worker_ff:
+        image: screenshots
+        command: ./manage.py screenshot_worker_ff
+        restart: always
+        env_file: env
+        volumes:
+            - /dev/shm:/dev/shm
+            - ./geckodriver.log:/app/geckodriver.log
+            - ./media:/app/media
+        networks:
+            - web
+
+    worker_cleanup_7day:
+        image: screenshots
+        command: ./manage.py cleanup_7day_old
+        restart: always
+        env_file: env
+        networks:
+            - web
+        volumes:
+            - ./media:/app/media
+
+    worker_upload_to_bucket:
+        image: screenshots
+        command: ./manage.py upload_to_bucket
+        restart: always
+        env_file: env
+        networks:
+            - web
+        volumes:
+            - ./media:/app/media
+
+networks:
+    web:
+        external: true
