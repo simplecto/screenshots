@@ -1,5 +1,5 @@
 from time import sleep
-
+import os
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException, WebDriverException, TimeoutException
@@ -53,7 +53,7 @@ def get_screenshot(shot) -> SeleniumScreenShot:
     options = Options()
     options.headless = True
 
-    driver = webdriver.Firefox(options=options, firefox_profile=profile)
+    driver = webdriver.Firefox(options=options, firefox_profile=profile, log_path=os.devnull)
     driver.install_addon(f'{settings.BASE_DIR}/firefox-extensions/i_dont_care_about_cookies-3.1.3-an+fx.xpi')
     driver.set_page_load_timeout(60)
     driver.set_window_size(shot.width, shot.height)
