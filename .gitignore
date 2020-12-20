@@ -21,3 +21,6 @@ venv/
 
 .idea/
 .vscode/
+
+Makefile
+docker-compose.prod.yml

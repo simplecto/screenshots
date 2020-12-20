@@ -8,8 +8,9 @@ services:
         env_file: env
         networks:
             - web
+            - default
         volumes:
-            - ./media:/app/media
+            - media:/app/media
         labels:
             - traefik.enable=true
             - traefik.http.routers.screenshot.rule=Host(`yourdomain.com`)
@@ -23,15 +24,15 @@ services:
             - traefik.http.services.screenshot.loadbalancer.healthCheck.interval=10s
             - traefik.http.services.screenshot.loadbalancer.healthCheck.timeout=3s
 
-
     media-files:
         image: nginx
         volumes:
-            - ./media:/usr/share/nginx/html:ro
+            - media:/usr/share/nginx/html:ro
         container_name: media-files
         restart: unless-stopped
         networks:
             - web
+            - default
         labels:
             - traefik.enable=true
             - traefik.http.routers.media-files.rule=(Host(`yourdomain.com`) && PathPrefix(`/media`))
@@ -50,30 +51,23 @@ services:
         env_file: env
         volumes:
             - /dev/shm:/dev/shm
-            - ./geckodriver.log:/app/geckodriver.log
-            - ./media:/app/media
-        networks:
-            - web
+            - media:/app/media
 
     worker_cleanup_7day:
         image: screenshots
         command: ./manage.py cleanup_7day_old
         restart: always
         env_file: env
-        networks:
-            - web
         volumes:
-            - ./media:/app/media
+            - media:/app/media
 
     worker_upload_to_bucket:
         image: screenshots
         command: ./manage.py upload_to_bucket
         restart: always
         env_file: env
-        networks:
-            - web
         volumes:
-            - ./media:/app/media
+            - media:/app/media
 
 networks:
     web:
