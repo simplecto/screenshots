@@ -45,9 +45,9 @@ working well inside docker containers. IF you can, ping me.
 
   1. Check out the repo
   1. Install a local virtual environment `python -m venv venv/`
-  1. Jump into venv/ with `souce venv/bin/activate`
+  1. Jump into venv/ with `source venv/bin/activate`
   1. Install requirements `pip install -r requirements.txt`
-  1. Create the postgres database for the project `CREATE DATABASE screenshot`
+  1. Create the postgres database for the project `CREATE DATABASE screenshots`
   1. copy the `env.sample` to `env` in the root source folder 
   1. Check / update values in the `env` folder if needed
   1. Install Selenium geckodriver for your platform `brew install geckodriver`
