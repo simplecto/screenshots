@@ -23,5 +23,5 @@ sentry-sdk==0.19.5
 six==1.15.0
 sorl-thumbnail==12.7.0
 sqlparse==0.4.1
-urllib3==1.26.2
+urllib3==1.26.5
 whitenoise==5.2.0
