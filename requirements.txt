@@ -1,6 +1,6 @@
 asgiref==3.3.1
 boto3==1.16.40
-certifi==2020.12.5
+certifi==2022.12.7
 chardet==4.0.0
 dj-database-url==0.5.0
 dj-email-url==1.0.1
