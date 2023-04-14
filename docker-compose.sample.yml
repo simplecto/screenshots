@@ -49,6 +49,7 @@ services:
         command: ./manage.py screenshot_worker_ff
         restart: always
         env_file: env
+        init: true
         volumes:
             - /dev/shm:/dev/shm
             - media:/app/media
