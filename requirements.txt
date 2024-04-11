@@ -8,7 +8,7 @@ Django==3.2.24
 django-csp==3.7
 docutils==0.16
 gunicorn==20.0.4
-idna==2.10
+idna==3.7
 jmespath==0.10.0
 Pillow==10.2.0
 psycopg2-binary==2.8.6
