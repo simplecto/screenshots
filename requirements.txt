@@ -22,6 +22,6 @@ selenium==3.141.0
 sentry-sdk==2.8.0
 six==1.15.0
 sorl-thumbnail==12.7.0
-sqlparse==0.4.4
+sqlparse==0.5.0
 urllib3==1.26.19
 whitenoise==5.2.0
