@@ -19,7 +19,7 @@ pytz==2020.4
 requests==2.32.0
 s3transfer==0.3.3
 selenium==3.141.0
-sentry-sdk==1.14.0
+sentry-sdk==2.8.0
 six==1.15.0
 sorl-thumbnail==12.7.0
 sqlparse==0.4.4
